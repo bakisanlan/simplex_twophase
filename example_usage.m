@@ -6,7 +6,9 @@
 A = [1 -13 0; 3 0 8; 0 -1 5 ];  % A is rearrenged by [gt;lt]
 b = [2 ; 5 ; 1.5];
 f = [-1 1 0];
-
+% Determining number of <= and >= equality constraints
+n_gt = 3;
+n_lt = 0;
 
 [x_opt, z_opt] = simplex_ineq(f,A,b,3,0);
 
