@@ -11,6 +11,8 @@ function [x_opt,z_opt] = simplex_ineq(f,A,b,n_gt,n_lt)
 % A = [1 -13 0; 3 0 8; 0 -1 5 ; -6 9 -7];  % A is rearrenged by [gt;lt]
 % b = [2 ; 5 ; 1.5 ; 4.5];
 % f = [-1 1 0];
+%n_gt = 3;                                 %number of >= constraints
+%n_lt = 1;                                 %number of <= constraints
 % [x_opt,z_opt] = simplex_eq(f,A,b)
 % ------------------------------------------------------------------
 
@@ -102,13 +104,15 @@ elseif tableau(end,end) < 10e-12
     non_basis_art_var = art_var(non_basis_art_var_idx);
 
     % dropping(replace with zeros) non basis artifical var columns
-    tableau(:,non_basis_art_var) = zeros(A_row,1);
+    if ~isempty(non_basis_art_var)
+        tableau(:,non_basis_art_var) = zeros(A_row,1);
+    end
 
     % dropping(replace with zeros) non basis original var with positive coef. in objective function 
     coef_of_org_var_in_obj = tableau(end,1:A_col);
     org_var_pos_coef_in_obj_logical= (coef_of_org_var_in_obj > 0);
     org_var_pos_coef_in_obj = find(org_var_pos_coef_in_obj_logical == 1);
-    tableau(:,org_var_pos_coef_in_obj) = zeros(A_row,1);
+    tableau(:,org_var_pos_coef_in_obj) = zeros(size(tableau(:,org_var_pos_coef_in_obj)));
 
     % replacing w with original f objective function
     tableau(end,:) = [-f, zeros(1,A_row+n_gt+1)];
